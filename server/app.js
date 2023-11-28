@@ -5,6 +5,7 @@ const PORT = 5005;
 const cohorts = require("./api/cohorts.json");
 const students = require("./api/students.json");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
@@ -41,6 +42,37 @@ app.get("/api/students", (req, res, next) => {
   res.json(students)
 })
 
+const Cohorts = require("./models/Cohorts.model");
+const Students = require("./models/Students.model");
+
+app.get("/cohorts", (req, res) => {
+  Cohorts.find({})
+  .then((cohort) => {
+    console.log("Retrieved cohort: ", cohort);
+    res.json(cohort);
+  })
+  .catch((error) => {
+    console.error("Error while retrieving cohort: ", error);
+    res.status(500).send({error: "Failed to retrieve cohort"}) 
+  })
+})
+
+app.get("/students", (req, res) => {
+  Students.find({})
+  .then((student) => {
+    console.log("Retrieved student: ", student);
+    res.json(student);
+  })
+  .catch((error) => {
+    console.error("Error while retrieving student: ", error);
+    res.status(500).send({error: "Failed to retrieve student"}) 
+  })
+})
+
+mongoose
+  .connect("mongodb://127.0.0.1:27017/cohort-tools-api")
+  .then(x => console.log(`Connected to Database: "${x.connections[0].name}"`))
+  .catch(err => console.error("Error connecting to MongoDB", err));
 
 // START SERVER
 app.listen(PORT, () => {
