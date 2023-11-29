@@ -11,7 +11,11 @@ const cohortSchema = new Schema ({
   endDate: Date,
   programManager: String,
   leadTeacher: String,
-  totalHours: Number
+  totalHours: Number,
+  students: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student"
+  }
 });
 
 const Cohort = mongoose.model("Cohort", cohortSchema);

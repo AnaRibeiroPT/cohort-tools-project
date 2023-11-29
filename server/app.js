@@ -39,15 +39,7 @@ app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
 
-app.get("/api/cohorts", (req, res, next) => {
-  res.json(cohorts);
-});
-
-app.get("/api/students", (req, res, next) => {
-  res.json(students);
-});
-
-app.get("/cohorts", (req, res) => {
+app.get("/api/cohorts", (req, res) => {
   Cohort.find({})
     .then((cohort) => {
       console.log("Retrieved cohort: ", cohort);
@@ -59,7 +51,7 @@ app.get("/cohorts", (req, res) => {
     });
 });
 
-app.get("/students", (req, res) => {
+app.get("/api/students", (req, res) => {
   Student.find({})
     .then((student) => {
       console.log("Retrieved student: ", student);
@@ -97,51 +89,55 @@ app.post("/api/students", (req, res, next) => {
 
 //Retrieves all of the students for a given cohort
 app.get("/api/students/cohort/:cohortId", (req, res, next) => {
-  Student.findById(req.params.cohortId)
-  .then((studentsArr) => {
-    res.json(studentsArr)
-  })
-  .catch((error) => {
-    console.log("Error retrieving all of the students for a given cohort", error);
-    res.send("Error retrieving all of the students for a given cohort");
-  })
-})
+  Student.find({ cohort: req.params.cohortId })
+    .then((studentsArr) => {
+      res.json(studentsArr);
+    })
+    .catch((error) => {
+      console.log(
+        "Error retrieving all of the students for a given cohort",
+        error
+      );
+      res.send("Error retrieving all of the students for a given cohort");
+    });
+});
 
 //Retrieves a specific student by id
 app.get("/api/students/:studentId", (req, res, next) => {
-  Student.findById(req.params.studentId)
-  .then((studentDetails) => {
-    res.json(studentDetails)
-  })
-  .catch((error) => {
-    console.log("Error retrieving the students details", error);
-    res.send("Error retrieving the students details");
-  })
-})
+  console.log(req.params.studentId);
+  Student.find({ _id: req.params.studentId })
+    .then((studentDetails) => {
+      res.json(studentDetails);
+    })
+    .catch((error) => {
+      console.log("Error retrieving the students details", error);
+      res.send("Error retrieving the students details");
+    });
+});
 
 //Updates a specific student by id
 app.put("/api/students/:studentId", (req, res, next) => {
   Student.findByIdAndUpdate(req.params.studentId)
-  .then((studentDetails) => {
-    res.json(studentDetails)
-  })
-  .catch((error) => {
-    console.log("Error updating the students details", error);
-    res.send("Error updating the students details");
-  })
-})
+    .then((studentDetails) => {
+      res.json(studentDetails);
+    })
+    .catch((error) => {
+      console.log("Error updating the students details", error);
+      res.send("Error updating the students details");
+    });
+});
 
 //Deletes a specific student by id
 app.delete("/api/students/:studentId", (req, res, next) => {
   Student.findByIdAndDelete(req.params.studentId)
-  .then((studentDetails) => {
-    res.json(studentDetails)
-  })
-  .catch((error) => {
-    console.log("Error deleting the student", error);
-    res.send("Error deleting the student");
-  })
-})
+    .then((studentDetails) => {
+      res.json(studentDetails);
+    })
+    .catch((error) => {
+      console.log("Error deleting the student", error);
+      res.send("Error deleting the student");
+    });
+});
 
 //Creates a new cohort
 app.post("/api/cohorts", (req, res, next) => {
@@ -155,7 +151,8 @@ app.post("/api/cohorts", (req, res, next) => {
     endDate: req.body.endDate,
     programManager: req.body.programManager,
     leadTeacher: req.body.leadTeacher,
-    totalHours: req.body.totalHours
+    totalHours: req.body.totalHours,
+    students: req.body.students
   })
     .then(() => {
       res.send("A cohort was created!");
@@ -168,39 +165,40 @@ app.post("/api/cohorts", (req, res, next) => {
 
 //Retrieves a specific cohort by id
 app.get("/api/cohorts/:cohortId", (req, res, next) => {
-  Cohort.findById(req.params.cohortId)
-  .then((cohortDetails) => {
-    res.json(cohortDetails)
-  })
-  .catch((error) => {
-    console.log("Error retrieving the cohort details", error);
-    res.send("Error retrieving the cohort details");
-  })
-})
+  Cohort.find({ _id: req.params.cohortId })
+    .populate("students")
+    .then((cohortDetails) => {
+      res.json(cohortDetails);
+    })
+    .catch((error) => {
+      console.log("Error retrieving the cohort details", error);
+      res.send("Error retrieving the cohort details");
+    });
+});
 
 //Updates a specific cohort by id
-app.put("/api/cohorts/:cohortsId", (req, res, next) => {
+app.put("/api/cohorts/:cohortId", (req, res, next) => {
   Cohort.findByIdAndUpdate(req.params.cohortId)
-  .then((cohortDetails) => {
-    res.json(cohortDetails)
-  })
-  .catch((error) => {
-    console.log("Error updating the cohort details", error);
-    res.send("Error updating the cohort details");
-  })
-})
+    .then((cohortDetails) => {6
+      res.json(cohortDetails);
+    })
+    .catch((error) => {
+      console.log("Error updating the cohort details", error);
+      res.send("Error updating the cohort details");
+    });
+});
 
 //Deletes a specific cohort by id
-app.delete("/api/cohorts/:cohortsId", (req, res, next) => {
+app.delete("/api/cohorts/:cohortId", (req, res, next) => {
   Student.findByIdAndDelete(req.params.cohortId)
-  .then((cohortDetails) => {
-    res.json(cohortDetails)
-  })
-  .catch((error) => {
-    console.log("Error deleting the cohort", error);
-    res.send("Error deleting the cohort");
-  })
-})
+    .then((cohortDetails) => {
+      res.json(cohortDetails);
+    })
+    .catch((error) => {
+      console.log("Error deleting the cohort", error);
+      res.send("Error deleting the cohort");
+    });
+});
 
 // START SERVER
 app.listen(PORT, () => {
