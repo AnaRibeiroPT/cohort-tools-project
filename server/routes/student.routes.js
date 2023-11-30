@@ -4,15 +4,14 @@ const router = require("express").Router();
 
 const mongoose = require("mongoose");
 
-router.get("/students", (req, res) => {
+router.get("/students", (req, res, next) => {
   Student.find({})
     .then((student) => {
       console.log("Retrieved student: ", student);
       res.json(student);
     })
     .catch((error) => {
-      console.error("Error while retrieving student: ", error);
-      res.status(500).send({ error: "Failed to retrieve student" });
+      next(error);
     });
 });
 
@@ -35,8 +34,7 @@ router.post("/students", (req, res, next) => {
       res.send("A student was created!");
     })
     .catch((error) => {
-      console.log("Error creating a new student", error);
-      res.send("Error creating a new student");
+      next(error);
     });
 });
 
@@ -47,11 +45,7 @@ router.get("/students/cohort/:cohortId", (req, res, next) => {
       res.json(studentsArr);
     })
     .catch((error) => {
-      console.log(
-        "Error retrieving all of the students for a given cohort",
-        error
-      );
-      res.send("Error retrieving all of the students for a given cohort");
+      next(error);
     });
 });
 
@@ -63,8 +57,7 @@ router.get("/students/:studentId", (req, res, next) => {
       res.json(studentDetails);
     })
     .catch((error) => {
-      console.log("Error retrieving the students details", error);
-      res.send("Error retrieving the students details");
+      next(error);
     });
 });
 
@@ -75,8 +68,7 @@ router.put("/students/:studentId", (req, res, next) => {
       res.json(studentDetails);
     })
     .catch((error) => {
-      console.log("Error updating the students details", error);
-      res.send("Error updating the students details");
+      next(error);
     });
 });
 
@@ -87,8 +79,7 @@ router.delete("/students/:studentId", (req, res, next) => {
       res.json(studentDetails);
     })
     .catch((error) => {
-      console.log("Error deleting the student", error);
-      res.send("Error deleting the student");
+      next(error);
     });
 });
 

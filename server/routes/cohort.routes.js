@@ -20,21 +20,19 @@ router.post("/cohorts", (req, res, next) => {
       res.send("A cohort was created!");
     })
     .catch((error) => {
-      console.log("Error creating a new cohort", error);
-      res.send("Error creating a new cohort");
+      next(error);
     });
 });
 
 // retrieves all the cohorts
-router.get("/cohorts", (req, res) => {
+router.get("/cohorts", (req, res, next) => {
   Cohort.find({})
     .then((cohort) => {
       console.log("Retrieved cohort: ", cohort);
       res.json(cohort);
     })
     .catch((error) => {
-      console.error("Error while retrieving cohort: ", error);
-      res.status(500).send({ error: "Failed to retrieve cohort" });
+      next(error);
     });
 });
 
@@ -46,8 +44,7 @@ router.get("/cohorts/:cohortId", (req, res, next) => {
       res.json(cohortDetails);
     })
     .catch((error) => {
-      console.log("Error retrieving the cohort details", error);
-      res.send("Error retrieving the cohort details");
+      next(error);
     });
 });
 
@@ -58,8 +55,7 @@ router.put("/cohorts/:cohortId", (req, res, next) => {
       res.json(cohortDetails);
     })
     .catch((error) => {
-      console.log("Error updating the cohort details", error);
-      res.send("Error updating the cohort details");
+      next(error);
     });
 });
 
@@ -70,8 +66,7 @@ router.delete("/cohorts/:cohortId", (req, res, next) => {
       res.json(cohortDetails);
     })
     .catch((error) => {
-      console.log("Error deleting the cohort", error);
-      res.send("Error deleting the cohort");
+      next(error);
     });
 });
 
