@@ -5,6 +5,8 @@ const PORT = 5005;
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+const { isAuthenticated } = require("./middleware/jwt.middleware");
+
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
 // ...
@@ -36,13 +38,16 @@ app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
 
-app.use("/api", require("./routes/cohort.routes"));
-app.use("/api", require("./routes/student.routes"));
+app.use("/api", isAuthenticated, require("./routes/cohort.routes"));
+app.use("/api", isAuthenticated, require("./routes/student.routes"));
+app.use("/api", isAuthenticated, require("./routes/user.routes"));
+
+app.use("/auth", require("./routes/auth.routes"))
 
 const { errorHandler, notFoundHandler } = require("./middleware/error-handling")
 
-app.use(errorHandler);
 app.use(notFoundHandler);
+app.use(errorHandler);
 
 // START SERVER
 app.listen(PORT, () => {
